@@ -77,7 +77,17 @@ module.exports = {
         if (queryString.maxPrice) {
             filter.price = { $gt: parseFloat(queryString.maxPrice) };
         }
-        
+
+
+        if (queryString.commentRating) {
+            const ratings = queryString.commentRating.split(','); 
+            filter.comments = { 
+                $elemMatch: { 
+                    comment: { $in: ratings } 
+                } 
+            };
+        }
+          
         let offset = (page - 1) * limit;
         const result = await Book.find(filter)
            .populate(population)
