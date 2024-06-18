@@ -2,10 +2,39 @@ const Book = require('../models/book');
 const aqp = require('api-query-params');
 module.exports = {
     createBook: async (data) => {
-        if (data.type === "EMPTY-BOOK") {
+        if (data.type === "BOOK") {
             let result = await Book.create(data);
             return result;
     }
+
+
+    // addcomment: async (data) => {
+    //     let myBook = await Book.findById(data.bookId).exec();
+    //     for (let i = 0; i < data.commentsArr.length; i++) {
+    //         myBook.comments.push(data.commentsArr[i]);
+    //     }
+    //     // check comment co ton tai trong Book hay chua sau do moi push
+
+    //     let newResult = await myBook.save();
+
+    //     //find project by id
+    //     return newResult;
+    // },
+
+    // addcomment: async (data) => {
+    //     let myBook = await Book.findById(data.bookId).exec();
+    //     for (let i = 0; i < data.commentsArr.length; i++) {
+    //         myBook.comments.pull(data.commentsArr[i]);
+    //     }
+    //     // check comment co ton tai trong Book hay chua sau do moi push
+
+    //     let newResult = await myBook.save();
+
+    //     //find project by id
+    //     return newResult;
+    // },
+
+
     if (data.type === "ADD-COMMENT") {
         let myBook = await Book.findById(data.bookId).exec();
         for (let i = 0; i < data.commentsArr.length; i++) {
@@ -37,7 +66,7 @@ module.exports = {
     getBook: async (queryString) => {
         const page = queryString.page;
     
-        const { filter, limit, population } = aqp(queryString);
+        const { filter, limit, population, projection  } = aqp(queryString);
     
         delete filter.page;
 
@@ -48,13 +77,13 @@ module.exports = {
         if (queryString.maxPrice) {
             filter.price = { $gt: parseFloat(queryString.maxPrice) };
         }
-    
-    
+        
         let offset = (page - 1) * limit;
         const result = await Book.find(filter)
            .populate(population)
            .skip(offset)
            .limit(limit)
+           .select(projection)
            .exec();
         return result;
     },

@@ -1,6 +1,6 @@
 const express = require('express');
 const routerAPI = express.Router();
-
+const middlewareController = require('../controllers/middlewareController');
 
 const { postCreateGenre, getAllGenre, putUpdateGenre, deleteAGenre
 } = require('../controllers/genreController');
@@ -8,20 +8,26 @@ const { postCreateGenre, getAllGenre, putUpdateGenre, deleteAGenre
 const { postCreateComment, getAllComment, putUpdateComment, deleteAComment,
 } = require('../controllers/commentController');
 
-const { postCreateBook, getAllBook, putUpdateBook, deleteABook
+const { postCreateBook, getAllBook, putUpdateBook, deleteABook, addCommentBook, removeCommentBook
 } = require('../controllers/bookController');
 
 
-routerAPI.post('/book', postCreateBook);
+const { getAllUser, deleteUser
+} = require('../controllers/userController');
+
+routerAPI.get('/user', middlewareController.verifyToken, getAllUser);
+routerAPI.delete('/user', middlewareController.verifyTokenAuth, deleteUser);
+
+routerAPI.post('/book', middlewareController.verifyTokenAuth, postCreateBook);
 routerAPI.get('/book', getAllBook);
-routerAPI.put('/book', putUpdateBook);
-routerAPI.delete('/book', deleteABook);
+routerAPI.put('/book', middlewareController.verifyTokenAuth, putUpdateBook);
+routerAPI.delete('/book', middlewareController.verifyTokenAuth, deleteABook);
 
 
-routerAPI.post('/comment', postCreateComment);
+routerAPI.post('/comment', middlewareController.verifyTokenAuth, postCreateComment);
 routerAPI.get('/comment', getAllComment);
-routerAPI.put('/comment', putUpdateComment);
-routerAPI.delete('/comment', deleteAComment);
+routerAPI.put('/comment', middlewareController.verifyTokenAuth, putUpdateComment);
+routerAPI.delete('/comment', middlewareController.verifyTokenAuth, deleteAComment);
 
 
 routerAPI.post('/genre', postCreateGenre);

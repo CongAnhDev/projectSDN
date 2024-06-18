@@ -1,5 +1,8 @@
 const User = require('../models/user');
+const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
+
+let refreshTokens = [];
 
 const authController = {
 
@@ -23,6 +26,28 @@ const authController = {
         }
     },
 
+    //generate access token
+    generateAccessToken: (user) => {
+        return jwt.sign({
+            id: user.id,
+            admin: user.admin
+        },
+        process.env.JWT_ACCESS_KEY,
+        {expiresIn: "1d" }
+        );
+    },
+
+    //generate refresh token
+    generateRefreshToken: (user) => {
+        return jwt.sign({
+            id: user.id,
+            admin: user.admin
+        },
+        process.env.JWT_REFRESH_KEY,
+        {expiresIn: "365d" }
+        );
+    },
+
     loginUser : async(req,res) =>{
         try {
             const user = await User.findOne({username: req.body.username});
@@ -37,12 +62,60 @@ const authController = {
                 return res.status(404).json("Wrong password!");
             }
             if(user && validPassword){
-                res.status(200).json(user);
+            const accessToken = authController.generateAccessToken(user);
+            const refreshToken = authController.generateRefreshToken(user);
+            refreshTokens.push(refreshToken);
+            res.cookie("refresh_token", refreshToken, {
+                httpOnly: true,
+                secure:false,
+                path:"/",
+                sameSite: "strict",
+            })
+            const {password, ...others} = user._doc
+                res.status(200).json({...others, accessToken});
             }
         } catch (error) {
             res.status(500).json(err)
         }
+    },
+
+    requestRefreshToken: async(req, res) => {
+        const refreshToken = req.cookies.refresh_token;
+        if (!refreshToken) res.status(401).json("You're not authenticated");
+        if (!refreshTokens.includes(refreshToken)) {
+            return res.status(403).json("Refresh token is not valid");
+        }
+        jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
+            if (err) {
+                console.log(err);
+            }
+            refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+            //create a new accesstoken, refresh token
+            const newAccessToken = authController.generateAccessToken(user);
+            const newRefreshToken = authController.generateRefreshToken(user);
+            refreshTokens.push(newRefreshToken);
+            res.cookie("refresh_token", newRefreshToken, {
+                httpOnly: true,
+                secure:false,
+                path:"/",
+                sameSite: "strict",
+            }),
+            res.status(200).json({
+                accessToken: newAccessToken,
+            })
+        })
+    },
+
+    userLogout: async(req, res) => {
+        res.clearCookie("refresh_token")
+        refreshTokens = refreshTokens.filter(
+            (token) => token !== req.cookies.refreshToken);
+        res.status(200).json({
+            message: "Logged out"
+        })
     }
 }
+
+
 
 module.exports = authController;
