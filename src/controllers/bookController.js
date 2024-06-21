@@ -8,22 +8,6 @@ module.exports = {
             data: result
         });
     },
-
-    // addCommentBook: async (req, res) => {
-    //     let result = await addcomment(req.body);
-    //     return res.status(200).json({
-    //         EC: 0,
-    //         data: result
-    //     });
-    // },
-
-    // removeCommentBook: async (req, res) => {
-    //     let result = await removecomment(req.body);
-    //     return res.status(200).json({
-    //         EC: 0,
-    //         data: result
-    //     });
-    // },
     
     getAllBook: async (req, res) => {
         let result = await getBook(req.query);
