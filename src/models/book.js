@@ -8,19 +8,16 @@ const genreSchema = new mongoose.Schema(
 )
 const bookSchema = new mongoose.Schema(
     {
-        isbn: {
-            type: String,
-            required: true
-        },
+        isbn: String,
         title: String,
         subTitle: String,
         publish_date: String,
         publisher: String,
         pages: String,
-        price: String,  
+        price: String,
+        image: String,  
         description: String,
         website: String,
-        comment: String,
         genre: genreSchema,
         comments:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'comment' }]
     },
@@ -30,6 +27,6 @@ const bookSchema = new mongoose.Schema(
 );
 
 bookSchema.plugin(mongoose_delete, { overrideMethods: 'all' });
-const Book = mongoose.model('Book', bookSchema);
+const Book = mongoose.model('book', bookSchema);
 
 module.exports = Book;

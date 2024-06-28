@@ -1,5 +1,6 @@
 const Book = require('../models/book');
 const aqp = require('api-query-params');
+
 module.exports = {
     createBook: async (data) => {
         if (data.type === "BOOK") {
@@ -50,16 +51,6 @@ getBook: async (queryString) => {
 
     if (queryString.maxPrice) {
       filter.price = { $gt: parseFloat(queryString.maxPrice) };
-    }
-
-    // Comment search logic
-    if (queryString.commentSearch) {
-      const searchTerms = queryString.commentSearch.split(',');
-      filter.comments = {
-        $elemMatch: {
-          comment: { $regex: searchTerms.join('|'), $options: 'i' } 
-        }
-      };
     }
 
     let offset = (page - 1) * limit;

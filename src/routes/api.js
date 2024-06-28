@@ -8,12 +8,25 @@ const { postCreateGenre, getAllGenre, putUpdateGenre, deleteAGenre
 const { postCreateComment, getAllComment, putUpdateComment, deleteAComment,
 } = require('../controllers/commentController');
 
-const { postCreateBook, getAllBook, putUpdateBook, deleteABook, addCommentBook, removeCommentBook
+const { postCreateBook, getAllBook, putUpdateBook, deleteABook, postUploadSingleFile, postUploadMultipleFiles
 } = require('../controllers/bookController');
-
 
 const { getAllUser, deleteUser
 } = require('../controllers/userController');
+
+const { getCommentBook } = require('../controllers/bookcommentController');
+
+routerAPI.get('/commentbook', getCommentBook);
+
+
+const { postCreateFavorite, getAllFavorite, putUpdateFavorite, deleteAFavorite } = require('../controllers/favoriteController');
+
+
+routerAPI.post('/favorite', middlewareController.verifyTokenAuth, postCreateFavorite);
+routerAPI.get('/favorite', getAllFavorite);
+routerAPI.put('/favorite', middlewareController.verifyTokenAuth, putUpdateFavorite);
+routerAPI.delete('/favorite', middlewareController.verifyTokenAuth, deleteAFavorite);
+
 
 routerAPI.get('/user', middlewareController.verifyToken, getAllUser);
 routerAPI.delete('/user', middlewareController.verifyTokenAuth, deleteUser);
@@ -22,6 +35,8 @@ routerAPI.post('/book', middlewareController.verifyTokenAuth, postCreateBook);
 routerAPI.get('/book', getAllBook);
 routerAPI.put('/book', middlewareController.verifyTokenAuth, putUpdateBook);
 routerAPI.delete('/book', middlewareController.verifyTokenAuth, deleteABook);
+routerAPI.post('/file', postUploadSingleFile)
+routerAPI.post('/files', postUploadMultipleFiles)
 
 
 routerAPI.post('/comment', middlewareController.verifyTokenAuth, postCreateComment);
@@ -39,18 +54,5 @@ routerAPI.delete('/genre', deleteAGenre);
 
 
 
-routerAPI.get('/info', (req, res) => {
-    console.log(">>check query: ", req.query)
-    return res.status(200).json({
-        data: req.query
-    })
-});
-
-routerAPI.get('/info/:name/:address', (req, res) => {
-    console.log(">>check params: ", req.params)
-    return res.status(200).json({
-        data: req.params
-    })
-});
 
 module.exports = routerAPI; 
