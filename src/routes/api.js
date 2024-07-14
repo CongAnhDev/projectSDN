@@ -11,7 +11,7 @@ const { postCreateComment, getAllComment, putUpdateComment, deleteAComment,
 const { postCreateBook, getAllBook, putUpdateBook, deleteABook, postUploadSingleFile, postUploadMultipleFiles
 } = require('../controllers/bookController');
 
-const { getAllUser, deleteUser
+const { getAllUser, deleteUser, postCreateUser
 } = require('../controllers/userController');
 
 const { getCommentBook } = require('../controllers/bookcommentController');
@@ -23,11 +23,11 @@ const { postCreateFavorite, getAllFavorite, putUpdateFavorite, deleteAFavorite }
 
 
 routerAPI.post('/favorite', middlewareController.verifyTokenAuth, postCreateFavorite);
-routerAPI.get('/favorite', getAllFavorite);
+routerAPI.get('/favorite', middlewareController.verifyTokenAuthForTeacher, getAllFavorite);
 routerAPI.put('/favorite', middlewareController.verifyTokenAuth, putUpdateFavorite);
 routerAPI.delete('/favorite', middlewareController.verifyTokenAuth, deleteAFavorite);
 
-
+routerAPI.post('/user', postCreateUser);
 routerAPI.get('/user', middlewareController.verifyToken, getAllUser);
 routerAPI.delete('/user', middlewareController.verifyTokenAuth, deleteUser);
 

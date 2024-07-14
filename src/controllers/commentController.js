@@ -2,7 +2,7 @@ const { createComment, getComment, uComment, dComment } = require('../services/c
 
 module.exports = {
     postCreateComment: async (req, res) => {
-        let result = await createComment(req.body);  
+        let result = await createComment(req.body, req);  
         return res.status(200).json({
             EC: 0,
             data: result

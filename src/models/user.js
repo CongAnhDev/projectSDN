@@ -13,6 +13,9 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true
         },
+        
+        image: String,
+
         password:{
             type: String,
             required: true,
@@ -20,7 +23,13 @@ const userSchema = new mongoose.Schema(
         admin:{
             type: Boolean,
             default: false
+        },
+
+        teacher:{
+            type: Boolean,
+            default: false
         }
+        
 
     },
     {

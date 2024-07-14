@@ -26,7 +26,18 @@ const middlewareController = {
                 next();
             }
             else{
-                res.status(401).json("You're not allowed to delete other");
+                res.status(401).json("You're not allowed");
+            }
+        });
+    },
+
+    verifyTokenAuthForTeacher: (req, res, next) => {
+        middlewareController.verifyToken(req, res, () => {
+            if(req.user.id == req.body.id || req.user.teacher ){
+                next();
+            }
+            else{
+                res.status(401).json("You're not allowed");
             }
         });
     }

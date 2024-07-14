@@ -71,9 +71,5 @@ module.exports = {
             return await postUploadSingleFile(req, res);
         }
     }
-
-
-    
-
 }
 

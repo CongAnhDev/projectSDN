@@ -1,9 +1,14 @@
 const Comment = require('../models/comment');
 const aqp = require('api-query-params');
 module.exports = {
-    createComment: async (data) => {
+    createComment: async (data,req) => {
        
-            let result = await Comment.create(data);
+        let result = await Comment.create({
+            comment: data.comment,
+            rating: data.rating,
+            author: data.author,
+            createdBy: [req.user.id], 
+        });
             return result;
      
     },

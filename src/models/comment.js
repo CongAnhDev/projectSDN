@@ -8,7 +8,10 @@ const commentSchema = new mongoose.Schema(
             required: true
         },
         rating: String,
-        author: String
+        author: String,
+        createdBy: [{
+            type: mongoose.Schema.Types.ObjectId, ref: 'user'
+        }],
 
     },
     {

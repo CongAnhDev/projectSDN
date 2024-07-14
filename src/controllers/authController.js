@@ -30,7 +30,8 @@ const authController = {
     generateAccessToken: (user) => {
         return jwt.sign({
             id: user.id,
-            admin: user.admin
+            admin: user.admin,
+            teacher: user.teacher
         },
         process.env.JWT_ACCESS_KEY,
         {expiresIn: "365d" }
@@ -41,7 +42,8 @@ const authController = {
     generateRefreshToken: (user) => {
         return jwt.sign({
             id: user.id,
-            admin: user.admin
+            admin: user.admin,
+            teacher: user.teacher
         },
         process.env.JWT_REFRESH_KEY,
         {expiresIn: "365d" }
